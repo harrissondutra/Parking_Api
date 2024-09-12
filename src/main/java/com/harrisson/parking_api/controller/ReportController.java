@@ -9,7 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Tag(name = "Reports", description = "Reports API")
 @RestController
@@ -37,10 +39,16 @@ public class ReportController {
     }
 
     @Operation(summary = "Generate report by day", description = "Generate report by day")
-    @GetMapping("/{establishmentId}/daily")
-    public ResponseEntity<Map<LocalDateTime, Long>> getVehicleCountByDay(@PathVariable Long establishmentId) {
-        Map<LocalDateTime, Long> report = reportService.getVehicleCountByDay(establishmentId);
-        return ResponseEntity.ok(report);
+    @GetMapping("/{id}/daily")
+    public ResponseEntity<Map<String, Long>> getVehicleCountByDay(@PathVariable Long id) {
+        Map<LocalDateTime, Long> report = reportService.getVehicleCountByDay(id);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+        Map<String, Long> formattedReport = report.entrySet().stream()
+                .collect(Collectors.toMap(
+                        entry -> entry.getKey().format(formatter),
+                        Map.Entry::getValue
+                ));
+        return ResponseEntity.ok(formattedReport);
     }
 
     @Operation(summary = "Generate report by type", description = "Generate report by type")
