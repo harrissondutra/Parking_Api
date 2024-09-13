@@ -30,14 +30,14 @@ public class SwaggerConfig {
                                 .email("harrissondutra@gmail.com"))
                         .license(new License()
                                 .name("Apache 2.0")
-                                .url("http://parking-api/api/licenca")));
+                                .url("https://parking-api/api/licenca")));
     }
     @Bean
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOrigin("http://localhost:3000"); // Ajuste a origem conforme necessário
+        config.addAllowedOrigin("https://localhost:3000"); // Ajuste a origem conforme necessário
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         source.registerCorsConfiguration("/**", config);
