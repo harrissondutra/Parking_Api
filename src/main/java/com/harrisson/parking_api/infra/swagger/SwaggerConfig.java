@@ -37,7 +37,8 @@ public class SwaggerConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOrigin("https://localhost:3000"); // Ajuste a origem conforme necessário
+        config.addAllowedOrigin("https://localhost:3000");
+        config.addAllowedOrigin("https://parkingapi-production-0b39.up.railway.app"); // Adiciona a origem de produção
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         source.registerCorsConfiguration("/**", config);
