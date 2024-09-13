@@ -7,6 +7,7 @@ import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.servers.Server;
 import org.springdoc.core.customizers.OpenApiCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,7 +39,8 @@ public class SwaggerConfig {
                                 .email("harrissondutra@gmail.com"))
                         .license(new License()
                                 .name("Apache 2.0")
-                                .url("https://parking-api/api/licenca")));
+                                .url("https://parking-api/api/licenca")))
+                .addServersItem(new Server().url("https://parkingapi-production-0b39.up.railway.app"));
     }
 
     @Bean
