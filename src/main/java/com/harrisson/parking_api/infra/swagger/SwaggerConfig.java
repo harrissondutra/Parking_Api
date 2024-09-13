@@ -1,16 +1,24 @@
 package com.harrisson.parking_api.infra.swagger;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import org.springdoc.core.customizers.OpenApiCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
+
+import java.util.Map;
+import java.util.Set;
 
 @Configuration
 public class SwaggerConfig {
@@ -32,13 +40,28 @@ public class SwaggerConfig {
                                 .name("Apache 2.0")
                                 .url("https://parking-api/api/licenca")));
     }
+
+    @Bean
+    public OpenApiCustomizer filterControllers(RequestMappingHandlerMapping handlerMapping) {
+        return openApi -> {
+            Map<RequestMappingInfo, HandlerMethod> handlerMethods = handlerMapping.getHandlerMethods();
+            handlerMethods.forEach((requestMappingInfo, handlerMethod) -> {
+                if (!handlerMethod.getBeanType().isAnnotationPresent(Tag.class)) {
+                    Set<String> patterns = requestMappingInfo.getPatternsCondition() != null ? requestMappingInfo.getPatternsCondition().getPatterns() : null;
+                    if (patterns != null) {
+                        patterns.forEach(openApi.getPaths()::remove);
+                    }
+                }
+            });
+        };
+    }
+
     @Bean
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOrigin("https://localhost:3000");
-        config.addAllowedOrigin("https://parkingapi-production-0b39.up.railway.app"); // Adiciona a origem de produção
+        config.addAllowedOriginPattern("*"); // Allow all origins
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         source.registerCorsConfiguration("/**", config);
