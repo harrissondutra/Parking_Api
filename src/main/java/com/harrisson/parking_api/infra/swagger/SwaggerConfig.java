@@ -39,11 +39,11 @@ public class SwaggerConfig {
                                 .email("harrissondutra@gmail.com"))
                         .license(new License()
                                 .name("Apache 2.0")
-                                .url("https://parking-api/api/licenca")));
-//                .addServersItem(new Server().url("https://parkingapi-production-0b39.up.railway.app"));
+                                .url("https://parking-api/api/licenca")))
+                .addServersItem(new Server().url("https://parkingapi-production-0b39.up.railway.app"));
     }
 
-    @Bean
+/*    @Bean
     public OpenApiCustomizer filterControllers(RequestMappingHandlerMapping handlerMapping) {
         return openApi -> {
             Map<RequestMappingInfo, HandlerMethod> handlerMethods = handlerMapping.getHandlerMethods();
@@ -56,7 +56,7 @@ public class SwaggerConfig {
                 }
             });
         };
-    }
+    }*/
 
     @Bean
     public CorsFilter corsFilter() {
