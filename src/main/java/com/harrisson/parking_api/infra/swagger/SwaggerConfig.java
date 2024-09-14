@@ -39,8 +39,8 @@ public class SwaggerConfig {
                                 .email("harrissondutra@gmail.com"))
                         .license(new License()
                                 .name("Apache 2.0")
-                                .url("https://parking-api/api/licenca")))
-                .addServersItem(new Server().url("https://parkingapi-production-0b39.up.railway.app"));
+                                .url("https://parking-api/api/licenca")));
+//                .addServersItem(new Server().url("https://parkingapi-production-0b39.up.railway.app"));
     }
 
     @Bean
