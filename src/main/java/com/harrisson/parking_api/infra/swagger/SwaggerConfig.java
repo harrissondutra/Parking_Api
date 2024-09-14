@@ -43,7 +43,7 @@ public class SwaggerConfig {
                 .addServersItem(new Server().url("https://parkingapi-production-0b39.up.railway.app"));
     }
 
-/*    @Bean
+    @Bean
     public OpenApiCustomizer filterControllers(RequestMappingHandlerMapping handlerMapping) {
         return openApi -> {
             Map<RequestMappingInfo, HandlerMethod> handlerMethods = handlerMapping.getHandlerMethods();
@@ -56,7 +56,7 @@ public class SwaggerConfig {
                 }
             });
         };
-    }*/
+    }
 
     @Bean
     public CorsFilter corsFilter() {
