@@ -1,5 +1,6 @@
 package com.harrisson.parking_api.controller;
 
+import com.harrisson.parking_api.enums.Type;
 import com.harrisson.parking_api.model.AccessControl;
 import com.harrisson.parking_api.service.AccessControlService;
 import org.junit.jupiter.api.Test;
@@ -26,12 +27,12 @@ public class AccessControlControllerTest {
     @Test
     public void testRegisterEntry() throws Exception {
         AccessControl accessControl = new AccessControl();
-        Mockito.when(accessControlService.registerEntry(1L, 1L)).thenReturn(accessControl);
+        Mockito.when(accessControlService.registerEntry("WLS-FW543", Type.CAR, 1L)).thenReturn(accessControl);
 
         mockMvc.perform(post("/access-controls")
-                .param("vehicleId", "1")
-                .param("establishmentId", "1")
-                .contentType(MediaType.APPLICATION_JSON))
+                        .param("vehicleId", "1")
+                        .param("establishmentId", "1")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json("{}"));
     }
@@ -39,12 +40,12 @@ public class AccessControlControllerTest {
     @Test
     public void testRegisterExit() throws Exception {
         AccessControl accessControl = new AccessControl();
-        Mockito.when(accessControlService.registerExit(1L, 1L)).thenReturn(accessControl);
+        Mockito.when(accessControlService.registerExit("HWS-6583")).thenReturn(accessControl);
 
         mockMvc.perform(post("/access-controls/exit")
-                .param("vehicleId", "1")
-                .param("establishmentId", "1")
-                .contentType(MediaType.APPLICATION_JSON))
+                        .param("vehicleId", "1")
+                        .param("establishmentId", "1")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json("{}"));
     }

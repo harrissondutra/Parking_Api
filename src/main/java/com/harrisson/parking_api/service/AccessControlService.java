@@ -22,12 +22,15 @@ public class AccessControlService {
     @Autowired
     private EstablishmentService establishmentService;
 
-    public AccessControl registerEntry(Long vehicleId, Long establishmentId) {
-        Vehicle vehicle = vehicleService.getById(vehicleId);
+    public AccessControl registerEntry(String plate, Type type, Long establishmentId) {
+        var vehicle = vehicleService.getByPlate(plate);
+        if (vehicle == null) {
+            vehicleService.save(new Vehicle(plate, type));
+        }
         Establishment establishment = establishmentService.getById(establishmentId);
-
+        assert vehicle != null;
         if (vehicle.getType().equals(Type.CAR)) {
-            int currentCarCount = accessControlRepository.countByEstablishmentIdAndVehicleType(establishmentId, "MOTORCYCLE");
+            int currentCarCount = accessControlRepository.countByEstablishmentIdAndVehicleType(establishmentId, "CAR");
             if (currentCarCount >= establishment.getCarQuantity()) {
                 throw new RuntimeException("Limite de vagas para carros atingido");
             }
@@ -37,7 +40,6 @@ public class AccessControlService {
                 throw new RuntimeException("Limite de vagas para motocicletas atingido");
             }
         }
-
         AccessControl accessControl = AccessControl.builder()
                 .vehicle(vehicle)
                 .establishment(establishment)
@@ -47,10 +49,10 @@ public class AccessControlService {
         return accessControlRepository.save(accessControl);
     }
 
-    public AccessControl registerExit(Long vehicleId, Long establishmentId) {
-        AccessControl accessControl = accessControlRepository.findByVehicleIdAndEstablishmentIdAndExitTimeIsNull(vehicleId, establishmentId);
+    public AccessControl registerExit(String plate) {
+        AccessControl accessControl = accessControlRepository.findByVehicle_Plate(plate);
         if (accessControl == null) {
-            throw new RuntimeException("Entrada não encontrada para o veículo e estabelecimento especificados");
+            throw new RuntimeException("Entrada não encontrada para o veículo");
         }
         accessControl.setExitTime(LocalDateTime.now());
         return accessControlRepository.save(accessControl);
