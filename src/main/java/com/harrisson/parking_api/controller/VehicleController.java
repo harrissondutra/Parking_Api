@@ -31,10 +31,9 @@ public class VehicleController {
     @Operation(summary = "Create a new vehicle", description = "Create a new vehicle")
     @PostMapping
     public ResponseEntity<VehicleDataDetails> createVehicle(@RequestBody @Valid VehicleData vehicleData, UriComponentsBuilder uriBuilder) {
-        var vehicle = new Vehicle(vehicleData);
-        service.save(vehicle);
-        var uri = uriBuilder.path("/vehicles/getById/{id}").buildAndExpand(vehicle.getId()).toUri();
-        return ResponseEntity.created(uri).body(new VehicleDataDetails(vehicle));
+       var vehicle = service.save(vehicleData);
+        var uri = uriBuilder.path("/vehicles/getById/{id}").buildAndExpand(vehicle.id()).toUri();
+        return ResponseEntity.created(uri).body(vehicle);
     }
 
     @Operation(summary = "List all vehicles", description = "List all vehicles")
@@ -47,21 +46,18 @@ public class VehicleController {
 
     @GetMapping(value = "/getById/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<VehicleDataDetails> getVehicleById(@PathVariable Long id) {
-        Vehicle vehicle = service.getById(id);
+        var vehicle = service.getById(id);
         if (vehicle == null) {
             return ResponseEntity.notFound().build();
         }
-        VehicleDataDetails vehicleDataDetails = new VehicleDataDetails(vehicle);
-        return ResponseEntity.ok(vehicleDataDetails);
+        return ResponseEntity.ok(vehicle);
     }
 
     @Operation(summary = "Update a vehicle", description = "Update a vehicle")
     @PutMapping("{id}")
     public ResponseEntity<VehicleDataDetails> updateVehicle(@PathVariable Long id, @RequestBody VehicleDataDetails vehicleDataDetails) {
         var vehicle = service.getById(id);
-        vehicle.updateVehicle(vehicleDataDetails.toEntity());
-        service.save(vehicle);
-        return ResponseEntity.ok(new VehicleDataDetails(vehicle));
+        return ResponseEntity.ok(vehicle);
     }
 
     @Operation(summary = "Delete a vehicle", description = "Delete a vehicle")

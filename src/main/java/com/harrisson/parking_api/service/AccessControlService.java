@@ -5,6 +5,7 @@ import com.harrisson.parking_api.model.AccessControl;
 import com.harrisson.parking_api.model.Establishment;
 import com.harrisson.parking_api.model.Vehicle;
 import com.harrisson.parking_api.repository.AccessControlRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,24 +23,16 @@ public class AccessControlService {
     @Autowired
     private EstablishmentService establishmentService;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     public AccessControl registerEntry(Long vehicleId, Long establishmentId) {
-        Vehicle vehicle = vehicleService.getById(vehicleId);
+        var vehicle = vehicleService.getById(vehicleId);
         Establishment establishment = establishmentService.getById(establishmentId);
 
-        if (vehicle.getType().equals(Type.CAR)) {
-            int currentCarCount = accessControlRepository.countByEstablishmentIdAndVehicleType(establishmentId, "MOTORCYCLE");
-            if (currentCarCount >= establishment.getCarQuantity()) {
-                throw new RuntimeException("Limite de vagas para carros atingido");
-            }
-        } else if (vehicle.getType().equals(Type.MOTORCYCLE)) {
-            int currentMotorcycleCount = accessControlRepository.countByEstablishmentIdAndVehicleType(establishmentId, "MOTORCYCLE");
-            if (currentMotorcycleCount >= establishment.getMotorcycleQuantity()) {
-                throw new RuntimeException("Limite de vagas para motocicletas atingido");
-            }
-        }
-
+        var vehicleRegistred = modelMapper.map(vehicle, Vehicle.class);
         AccessControl accessControl = AccessControl.builder()
-                .vehicle(vehicle)
+                .vehicle(vehicleRegistred)
                 .establishment(establishment)
                 .entryTime(LocalDateTime.now())
                 .build();

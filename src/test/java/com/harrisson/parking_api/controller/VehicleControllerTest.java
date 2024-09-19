@@ -7,6 +7,7 @@ import com.harrisson.parking_api.to.VehicleData;
 import com.harrisson.parking_api.to.VehicleDataDetails;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -29,6 +30,9 @@ public class VehicleControllerTest {
 
     @MockBean
     private VehicleService vehicleService;
+
+    @Autowired
+    private ModelMapper mapper;
 
     private Vehicle vehicle;
     private VehicleData vehicleData;
@@ -53,7 +57,7 @@ public class VehicleControllerTest {
             Vehicle vehicle = invocation.getArgument(0);
             vehicle.setId(1L); // Set the ID to simulate the save operation
             return vehicle;
-        }).when(vehicleService).save(any(Vehicle.class));
+        }).when(vehicleService).save(vehicleData);
 
         mockMvc.perform(post("/vehicles")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -74,7 +78,7 @@ public class VehicleControllerTest {
 
     @Test
     public void testGetVehicleById() throws Exception {
-        when(vehicleService.getById(anyLong())).thenReturn(vehicle);
+        when(vehicleService.getById(anyLong())).thenReturn(vehicleDataDetails);
 
         mockMvc.perform(get("/vehicles/getById/1")
                         .accept(MediaType.APPLICATION_JSON))
@@ -85,9 +89,8 @@ public class VehicleControllerTest {
 
     @Test
     public void testUpdateVehicle() throws Exception {
-        when(vehicleService.getById(anyLong())).thenReturn(vehicle);
-        doNothing().when(vehicleService).save(any(Vehicle.class));
-
+        when(vehicleService.getById(anyLong())).thenReturn(vehicleDataDetails);
+        when(vehicleService.update(anyLong(), any(VehicleData.class))).thenReturn(vehicleDataDetails);
         mockMvc.perform(put("/vehicles/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"plate\":\"ABC-1234\",\"model\":\"Model X\",\"manufacturer\":\"Tesla\",\"year\":2020}"))
